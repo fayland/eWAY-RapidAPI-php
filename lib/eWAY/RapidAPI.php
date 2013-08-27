@@ -247,8 +247,6 @@ class ResponseCode {
     );
 
     public static function getMessage($code) {
-        error_log("code: $code");
-        error_log("xx" . ResponseCode::$_codes[$code]);
         if (isset(ResponseCode::$_codes[$code])) {
             return ResponseCode::$_codes[$code];
         } else {
