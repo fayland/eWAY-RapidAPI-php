@@ -299,7 +299,7 @@ if ( isset($_POST['btnSubmit']) ) {
                 <label for="txtInvoiceDescription">Invoice Description</label>
                 <input id="txtInvoiceDescription" name="txtInvoiceDescription" type="text" value="Individual Invoice Description" />
             </div>
-            <div class="header">
+            <!-- <div class="header">
                 Custom Fields
             </div>
             <div class="fields">
@@ -313,7 +313,7 @@ if ( isset($_POST['btnSubmit']) ) {
             <div class="fields">
                 <label for="txtOption3">Option 3</label>
                 <input id="txtOption3" name="txtOption3" type="text" value="Option3" />
-            </div>
+            </div> -->
         </div>
         <div class="transactioncard">
             <div class="header first">
