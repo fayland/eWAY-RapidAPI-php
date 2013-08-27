@@ -1,0 +1,23 @@
+{
+    "name": "fayland/eWAY-RapidAPI-php",
+    "description": "eWAY RapidAPI SDK for PHP",
+    "keywords" : [ "eWAY", "RapidAPI" ],
+
+    "license": "MIT",
+
+    "autoload": {
+        "psr-0": { "RapidAPI": "lib/" }
+    },
+
+    "require": {
+        "php": ">= 5.3",
+        "ext-curl": "*"
+    },
+
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/fayland/eWAY-RapidAPI-php"
+        }
+    ]
+}
