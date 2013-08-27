@@ -101,6 +101,7 @@ if ( isset($_POST['btnSubmit']) ) {
         $ErrorArray = explode(",", $result->Errors);
         $lblError = "";
         foreach ( $ErrorArray as $error ) {
+            $error = $service->getMessage($error);
             $lblError .= $error;
         }
     } else {
@@ -169,17 +170,14 @@ if ( isset($_POST['btnSubmit']) ) {
                         {
                             //Get Error Messages from Error Code. Error Code Mappings are in the Config.ini file
                             $ResponseMessageArray = explode(",", $result->ResponseMessage);
-
                             $responseMessage = "";
-
-                            foreach ( $ResponseMessageArray as $message )
-                            {
-                                if(isset($service->APIConfig[$message]))
-                                    $responseMessage .= $message . " ".$service->APIConfig[$message]."<br>";
+                            foreach ( $ResponseMessageArray as $message ) {
+                                $real_message = $service->getMessage($message);
+                                if($message != $real_message)
+                                    $responseMessage .= $message . " " . $real_message . "<br>";
                                 else
                                     $responseMessage .= $message;
                             }
-
                             echo $responseMessage;
                         }
 
@@ -419,11 +417,7 @@ if ( isset($_POST['btnSubmit']) ) {
                     Expiry Date</label>
                 <select ID="ddlCardExpiryMonth" name="ddlCardExpiryMonth">
                     <?php
-                       if (isset($Response->Customer->CardExpiryMonth)&& !empty($Response->Customer->CardExpiryMonth)) {
-                            $expiry_month = $Response->Customer->CardExpiryMonth;
-                        } else {
-                            $expiry_month = date('m');
-                        }
+                        $expiry_month = date('m');
                         for($i = 1; $i <= 12; $i++) {
                             $s = sprintf('%02d', $i);
                             echo "<option value='$s'";
