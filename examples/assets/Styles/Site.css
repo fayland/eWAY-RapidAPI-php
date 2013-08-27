@@ -13,12 +13,11 @@ img {border:none;}
 #toplinks .help {float:right;}
 #titlearea {padding:20px 0px 10px 20px; overflow:hidden;float:left; width:879px; color:#000; clear:both; font-size:1.1em; }
 #titlearea p.left {float:left; width:477px;}
-#titlearea p.right {float:right; width:363px; background:url(../Images/titlerightbg.gif) no-repeat; padding-left:20px; min-height:45px;  line-height:1.6em;}
 #titlearea p.right span.tel {font-weight:bold; font-size:1.6em;}
 #titlearea p.right span.sub {font-size:0.8em; color:#000;}
 
-#maincontent {background:url(../Images/secure-body.gif) repeat-y; float:left; width:845px; padding:10px 27px; margin:0 auto; overflow:hidden;  }
-#maincontentbottom {background:url(../Images/reg-body-bottom.gif) no-repeat; clear:both; height:4px;}
+#maincontent { float:left; width:845px; padding:10px 27px; margin:0 auto; overflow:hidden;  }
+#maincontentbottom { clear:both; height:4px;}
 
 .fields {clear:both; float:left; margin-bottom:20px; width:400px; margin-top:10px; }
 label {width:174px; float:left; }
@@ -31,7 +30,7 @@ a.question {background:url(../Images/question.gif) no-repeat left middle; float:
 a.question:hover {text-decoration:none;}
 
 #footer {border:1px solid #ccc; width:953px; margin:0px 3px; background:#fff; clear:both;}
-#footer .foothead {background:url(../Images/footheadbg.gif) repeat-x; font-weight:bold; color:#646464; line-height:25px; padding-left:19px;}
+#footer .foothead { font-weight:bold; color:#646464; line-height:25px; padding-left:19px;}
 
 a {text-decoration:none;}
 a:hover {text-decoration:underline;}
@@ -74,7 +73,7 @@ div.paymentbutton { clear: both; text-align:right; margin-right:10px; color:#FFF
 .response .fields .price {font-size:1.4em;}
 
 
-div#errors { border: 1px solid red; display: none; background: url(../Images/cross.gif) no-repeat 2px 12px; }
+div#errors { border: 1px solid red; display: none; }
 div#errors h4 { color:Red; padding-left: 32px;  }
 div#errors Li { margin-left: 16px; }
 input[type="image"] { border: 0px;}

@@ -115,19 +115,19 @@ if ( isset($_POST['btnSubmit']) ) {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title></title>
-    <link href="../Styles/Site.css" rel="stylesheet" type="text/css" />
-    <link href="../Styles/jquery-ui-1.8.11.custom.css" rel="stylesheet" type="text/css" />
-    <script src="../Scripts/jquery-1.4.4.min.js" type="text/javascript"></script>
-    <script src="../Scripts/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
-    <script src="../Scripts/jquery.ui.datepicker-en-GB.js" type="text/javascript"></script>
-    <script type="text/javascript" src="../Scripts/tooltip.js"></script>
+    <link href="../assets/Styles/Site.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/Styles/jquery-ui-1.8.11.custom.css" rel="stylesheet" type="text/css" />
+    <script src="../assets/Scripts/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="../assets/Scripts/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
+    <script src="../assets/Scripts/jquery.ui.datepicker-en-GB.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../assets/Scripts/tooltip.js"></script>
 </head>
 <body>
     <form method="POST">
     <center>
         <div id="outer">
             <div id="toplinks">
-                <img alt="eWAY Logo" class="logo" src="../Images/companylogo.gif" width="960px" height="65px" />
+                <img alt="eWAY Logo" class="logo" src="../assets/Images/companylogo.gif" width="960px" height="65px" />
             </div>
             <div id="main">
 
@@ -280,7 +280,7 @@ if ( isset($_POST['btnSubmit']) ) {
                 Payment Details
             </div>
             <div class="fields">
-                <label for="txtAmount">Amount &nbsp;<img src="../Images/question.gif" alt="Find out more" id="amountTipOpener" border="0" /></label>
+                <label for="txtAmount">Amount &nbsp;<img src="../assets/Images/question.gif" alt="Find out more" id="amountTipOpener" border="0" /></label>
                 <input id="txtAmount" name="txtAmount" type="text" value="100" />
             </div>
             <div class="fields">
@@ -320,7 +320,7 @@ if ( isset($_POST['btnSubmit']) ) {
                 Customer Details
             </div>
             <div class="fields">
-                <label for="txtTokenCustomerID">Token Customer ID &nbsp;<img src="../Images/question.gif" alt="Find out more" id="tokenCustomerTipOpener" border="0" /></label>
+                <label for="txtTokenCustomerID">Token Customer ID &nbsp;<img src="../assets/Images/question.gif" alt="Find out more" id="tokenCustomerTipOpener" border="0" /></label>
                 <input id="txtTokenCustomerID" name="txtTokenCustomerID" type="text" />
             </div>
             <div class="fields">
