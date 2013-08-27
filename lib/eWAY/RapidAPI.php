@@ -77,8 +77,6 @@ class RapidAPI {
     	$url = $this->_url . $url;
         $ch = curl_init($url);
 
-        error_log("POST TO $url");
-
         curl_setopt($ch, CURLOPT_HTTPHEADER, Array("Content-Type: application/json"));
         curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
         if ($IsPost)

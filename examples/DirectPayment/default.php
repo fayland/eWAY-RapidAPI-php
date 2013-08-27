@@ -5,6 +5,7 @@ session_start();
 // Include RapidAPI Library
 require('../../lib/eWAY/RapidAPI.php');
 
+$in_page = 'before_submit';
 if ( isset($_POST['btnSubmit']) ) {
 
     // Create DirectPayment Request Object
@@ -67,13 +68,13 @@ if ( isset($_POST['btnSubmit']) ) {
     $request->Items->LineItem[0] = $item1;
     $request->Items->LineItem[1] = $item2;
 
-    // Populate values for Options
-    $opt1 = new eWAY\Option();
-    $opt1->Value = $_POST['txtOption1'];
-    $opt2 = new eWAY\Option();
-    $opt2->Value = $_POST['txtOption2'];
-    $opt3 = new eWAY\Option();
-    $opt3->Value = $_POST['txtOption3'];
+    // Populate values for Options (not needed since it's in one script)
+    // $opt1 = new eWAY\Option();
+    // $opt1->Value = $_POST['txtOption1'];
+    // $opt2 = new eWAY\Option();
+    // $opt2->Value = $_POST['txtOption2'];
+    // $opt3 = new eWAY\Option();
+    // $opt3->Value = $_POST['txtOption3'];
 
     $request->Options->Option[0]= $opt1;
     $request->Options->Option[1]= $opt2;
@@ -103,7 +104,7 @@ if ( isset($_POST['btnSubmit']) ) {
             $lblError .= $error;
         }
     } else {
-        print_r($result);
+        $in_page = 'view_result';
     }
 }
 
@@ -128,6 +129,124 @@ if ( isset($_POST['btnSubmit']) ) {
                 <img alt="eWAY Logo" class="logo" src="../Images/companylogo.gif" width="960px" height="65px" />
             </div>
             <div id="main">
+
+<?php
+    if ($in_page === 'view_result') {
+?>
+
+    <div id="titlearea">
+        <h2>Sample Response</h2>
+    </div>
+
+    <div id="maincontent">
+        <div class="response">
+            <div class="fields">
+                <label for="lblAuthorisationCode">
+                    Authorisation Code</label>
+                <label id="lblAuthorisationCode"><?php echo isset($result->AuthorisationCode) ? $result->AuthorisationCode:""; ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblInvoiceNumber">
+                    Invoice Number</label>
+                <label id="lblInvoiceNumber"><?php echo $result->Payment->InvoiceNumber; ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblInvoiceReference">
+                    Invoice Reference</label>
+                <label id="lblInvoiceReference"><?php echo $result->Payment->InvoiceReference; ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblResponseCode">
+                    Response Code</label>
+                <label id="lblResponseCode"><?php echo $result->ResponseCode; ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblResponseMessage">
+                    Response Message</label>
+                <label id="lblResponseMessage">
+                 <?php
+                        if(isset($result->ResponseMessage))
+                        {
+                            //Get Error Messages from Error Code. Error Code Mappings are in the Config.ini file
+                            $ResponseMessageArray = explode(",", $result->ResponseMessage);
+
+                            $responseMessage = "";
+
+                            foreach ( $ResponseMessageArray as $message )
+                            {
+                                if(isset($service->APIConfig[$message]))
+                                    $responseMessage .= $message . " ".$service->APIConfig[$message]."<br>";
+                                else
+                                    $responseMessage .= $message;
+                            }
+
+                            echo $responseMessage;
+                        }
+
+                 ?>
+                </label>
+            </div>
+            <div class="fields">
+                <label for="lblTokenCustomerID">
+                    TokenCustomerID
+                </label>
+                <label id="lblTokenCustomerID"><?php
+                    if (isset($result->TokenCustomerID)) {
+                            echo $result->TokenCustomerID;
+                    }
+                ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblTotalAmount">
+                    Total Amount</label>
+                <label id="lblTotalAmount"><?php
+                    if (isset($result->Payment->TotalAmount)) {
+                        echo $result->Payment->TotalAmount;
+                    }
+                ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblTransactionID">
+                    TransactionID</label>
+                <label id="lblTransactionID"><?php
+                    if (isset($result->TransactionID)) {
+                            echo $result->TransactionID;
+                    }
+                ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblTransactionStatus">
+                    Transaction Status</label>
+                <label id="lblTransactionStatus"><?php
+                    if (isset($result->TransactionStatus) && $result->TransactionStatus && (is_bool($result->TransactionStatus) || $result->TransactionStatus != "false")) {
+                        echo 'True';
+                    } else {
+                        echo 'False';
+                    }
+                ?></label>
+            </div>
+            <div class="fields">
+                <label for="lblBeagleScore">
+                    Beagle Score</label>
+                <label id="lblBeagleScore"><?php
+                    if (isset($result->BeagleScore)) {
+                        echo $result->BeagleScore;
+                    }
+                ?></label>
+            </div>
+        </div>
+    </div>
+
+        <br />
+        <br />
+        <a href="default.php">[Start Over]</a>
+
+    <div id="maincontentbottom">
+    </div>
+
+<?php
+    } else { // for if ($in_page === 'view_result') {
+?>
 
     <div id="titlearea">
         <h2>Sample Merchant Page</h2>
@@ -396,10 +515,14 @@ if ( isset($_POST['btnSubmit']) ) {
         If this field is checked, the details in the customer fields will be used to either create a new token customer, or (if Token Customer ID has a value) update an existing customer.
     </div>
 
+<?php
+    } // for if ($in_page === 'view_result') {
+?>
             </div>
             <div id="footer"></div>
         </div>
     </center>
     </form>
+
 </body>
 </html>
