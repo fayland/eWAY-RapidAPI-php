@@ -486,6 +486,7 @@ if ( isset($_POST['btnSubmit']) ) {
             <div class="fields">
                 <label for="ddlTransactionType">Transaction Type</label>
                 <select id="ddlTransactionType" name="ddlTransactionType" style="width:140px;">
+                <option value="Purchase">Ecommerce</option>
                 <option value="MOTO">MOTO</option>
                 <option value="Recurring">Recurring</option>
                 </select>
