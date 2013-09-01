@@ -122,7 +122,7 @@ if ( isset($_POST['btnSubmit']) ) {
 
 $AccessCode = $_GET['AccessCode'];
 if ($AccessCode) {
-    // should be static from somewhere
+    // should be somewhere from config instead of SESSION
     if ($_SESSION['eWAY_username'] && $_SESSION['eWAY_password']) {
         // Call RapidAPI
         $eway_params = array();
