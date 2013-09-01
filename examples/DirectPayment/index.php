@@ -102,7 +102,7 @@ if ( isset($_POST['btnSubmit']) ) {
         $lblError = "";
         foreach ( $ErrorArray as $error ) {
             $error = $service->getMessage($error);
-            $lblError .= $error;
+            $lblError .= $error . "<br />\n";;
         }
     } else {
         $in_page = 'view_result';
@@ -237,7 +237,7 @@ if ( isset($_POST['btnSubmit']) ) {
 
         <br />
         <br />
-        <a href="default.php">[Start Over]</a>
+        <a href="index.php">[Start Over]</a>
 
     <div id="maincontentbottom">
     </div>

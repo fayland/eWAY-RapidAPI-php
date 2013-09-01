@@ -49,6 +49,27 @@ class RapidAPI {
         return json_decode($response);
     }
 
+    public function CreateAccessCodesShared($request) {
+        $i = 0;
+        $tempClass = new \stdClass();
+        foreach ($request->Options->Option as $Option) {
+            $tempClass->Options[$i] = $Option;
+            $i++;
+        }
+        $request->Options = $tempClass->Options;
+        $i = 0;
+        $tempClass = new \stdClass();
+        foreach ($request->Items->LineItem as $LineItem) {
+            $tempClass->Items[$i] = $LineItem;
+            $i++;
+        }
+        $request->Items = $tempClass->Items;
+
+        $request = json_encode($request);
+        $response = $this->PostToRapidAPI("AccessCodesShared", $request);
+        return json_decode($response);
+    }
+
     public function DirectPayment($request) {
         $i = 0;
         $tempClass = new \stdClass();
@@ -265,6 +286,7 @@ class CreateAccessCodeRequest {
     public $Payment;
     public $RedirectUrl;
     public $Method;
+    public $TransactionType;
     private $CustomerIP;
     private $DeviceID;
 
@@ -274,6 +296,13 @@ class CreateAccessCodeRequest {
         $this->Payment = new Payment();
         $this->CustomerIP = $_SERVER["SERVER_NAME"];
     }
+}
+
+class CreateAccessCodesSharedRequest extends CreateAccessCodeRequest {
+    public $CancelUrl;
+    public $LogoUrl;
+    public $HeaderText;
+    public $CustomerReadOnly;
 }
 
 class CreateDirectPaymentRequest {
