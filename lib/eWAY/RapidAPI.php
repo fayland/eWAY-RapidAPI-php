@@ -120,6 +120,12 @@ class RapidAPI {
             echo "<h2>POST Error: " . curl_error($ch) . " URL: $url</h2><pre>";
             die();
         } else {
+            $info = curl_getinfo($ch);
+            if ($info['http_code'] == 401) {
+                echo "<h2>Please check the API Key and Password</h2><pre>";
+                die();
+            }
+
             curl_close($ch);
             return $response;
         }
