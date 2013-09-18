@@ -8,6 +8,8 @@ require('../../lib/eWAY/RapidAPI.php');
 $in_page = 'before_submit';
 if ( isset($_POST['btnSubmit']) ) {
 
+    // we skip all validation but you should do it in real world
+
     // Create DirectPayment Request Object
     $request = new eWAY\CreateAccessCodesSharedRequest();
 
@@ -49,15 +51,24 @@ if ( isset($_POST['btnSubmit']) ) {
     // ShippingMethod, e.g. "LowCost", "International", "Military". Check the spec for available values.
     $request->ShippingAddress->ShippingMethod = "LowCost";
 
-    // Populate values for LineItems
-    $item1 = new eWAY\LineItem();
-    $item1->SKU = "SKU1";
-    $item1->Description = "Description1";
-    $item2 = new eWAY\LineItem();
-    $item2->SKU = "SKU2";
-    $item2->Description = "Description2";
-    $request->Items->LineItem[0] = $item1;
-    $request->Items->LineItem[1] = $item2;
+    if ($_POST['ddlMethod'] == 'ProcessPayment' || $_POST['ddlMethod'] == 'TokenPayment') {
+        // Populate values for LineItems
+        $item1 = new eWAY\LineItem();
+        $item1->SKU = "SKU1";
+        $item1->Description = "Description1";
+        $item2 = new eWAY\LineItem();
+        $item2->SKU = "SKU2";
+        $item2->Description = "Description2";
+        $request->Items->LineItem[0] = $item1;
+        $request->Items->LineItem[1] = $item2;
+
+        // Populate values for Payment Object
+        $request->Payment->TotalAmount = $_POST['txtAmount'];
+        $request->Payment->InvoiceNumber = $_POST['txtInvoiceNumber'];
+        $request->Payment->InvoiceDescription = $_POST['txtInvoiceDescription'];
+        $request->Payment->InvoiceReference = $_POST['txtInvoiceReference'];
+        $request->Payment->CurrencyCode = $_POST['txtCurrencyCode'];
+    }
 
     // Populate values for Options (not needed since it's in one script)
     $opt1 = new eWAY\Option();
@@ -71,13 +82,6 @@ if ( isset($_POST['btnSubmit']) ) {
     $request->Options->Option[1]= $opt2;
     $request->Options->Option[2]= $opt3;
 
-    // Populate values for Payment Object
-    $request->Payment->TotalAmount = $_POST['txtAmount'];
-    $request->Payment->InvoiceNumber = $_POST['txtInvoiceNumber'];
-    $request->Payment->InvoiceDescription = $_POST['txtInvoiceDescription'];
-    $request->Payment->InvoiceReference = $_POST['txtInvoiceReference'];
-    $request->Payment->CurrencyCode = $_POST['txtCurrencyCode'];
-
     $self_url = 'http';
     if (!empty($_SERVER['HTTPS'])) {$self_url .= "s";}
     $self_url .= "://" . $_SERVER["SERVER_NAME"];
@@ -88,8 +92,8 @@ if ( isset($_POST['btnSubmit']) ) {
 
     $request->RedirectUrl = $self_url;
     $request->CancelUrl   = $self_url;
-    $request->Method = 'ProcessPayment';
-    $request->TransactionType = 'Purchase';
+    $request->Method = $_POST['ddlMethod'];
+    $request->TransactionType = $_POST['ddlTransactionType'];
 
     $request->LogoUrl = $_POST['txtLogoUrl'];
     $request->HeaderText = $_POST['txtHeaderText'];;
@@ -248,8 +252,8 @@ if ($AccessCode) {
                     TokenCustomerID
                 </label>
                 <label id="lblTokenCustomerID"><?php
-                    if (isset($result->TokenCustomerID)) {
-                            echo $result->TokenCustomerID;
+                    if (isset($result->Customer->TokenCustomerID)) {
+                            echo $result->Customer->TokenCustomerID;
                     }
                 ?></label>
             </div>
@@ -337,6 +341,25 @@ if ($AccessCode) {
                 <option value="">No</option>
                 </select>
             </div>
+            <div class="fields">
+                <label for="ddlMethod">Payment Method</label>
+                <select id="ddlMethod" name="ddlMethod" style="width: 140px" onchange="onMethodChange(this.options[this.options.selectedIndex].value)">
+                    <option value="ProcessPayment">ProcessPayment</option>
+                    <option value="TokenPayment">TokenPayment</option>
+                    <option value="CreateTokenCustomer">CreateTokenCustomer</option>
+                    <option value="UpdateTokenCustomer">UpdateTokenCustomer</option>
+                </select>
+            </div>
+            <script>
+                function onMethodChange(v) {
+                    if (v == 'ProcessPayment' || v == 'TokenPayment') {
+                        jQuery('#payment_details').show();
+                    } else {
+                        jQuery('#payment_details').hide();
+                    }
+                }
+            </script>
+
             <div class="header first">
                 Shared Page Settings
             </div>
@@ -348,6 +371,7 @@ if ($AccessCode) {
                 <label for="txtHeaderText">Header Text (optional)</label>
                 <input id="txtHeaderText" name="txtHeaderText" type="text" value="" />
             </div>
+          <div id='payment_details'>
             <div class="header">
                 Payment Details
             </div>
@@ -371,6 +395,8 @@ if ($AccessCode) {
                 <label for="txtInvoiceDescription">Invoice Description</label>
                 <input id="txtInvoiceDescription" name="txtInvoiceDescription" type="text" value="Individual Invoice Description" />
             </div>
+          </div> <!-- end for <div id='payment_details'> -->
+
             <div class="header">
                 Custom Fields
             </div>
@@ -471,7 +497,17 @@ if ($AccessCode) {
                 <label for="txtComments">Comments</label>
                 <textarea id="txtComments" name="txtComments"/>Some comments here</textarea>
             </div>
-
+            <div class="header">
+                Others
+            </div>
+            <div class="fields">
+                <label for="ddlTransactionType">Transaction Type</label>
+                <select id="ddlTransactionType" name="ddlTransactionType" style="width:140px;">
+                <option value="Purchase">Ecommerce</option>
+                <option value="MOTO">MOTO</option>
+                <option value="Recurring">Recurring</option>
+                </select>
+            </div>
         </div>
         <div class="button">
             <br />

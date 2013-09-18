@@ -8,6 +8,8 @@ require('../../lib/eWAY/RapidAPI.php');
 $in_page = 'before_submit';
 if ( isset($_POST['btnSubmit']) ) {
 
+    // we skip all validation but you should do it in real world
+
     // Create DirectPayment Request Object
     $request = new eWAY\CreateDirectPaymentRequest();
 
@@ -58,15 +60,24 @@ if ( isset($_POST['btnSubmit']) ) {
     // ShippingMethod, e.g. "LowCost", "International", "Military". Check the spec for available values.
     $request->ShippingAddress->ShippingMethod = "LowCost";
 
-    // Populate values for LineItems
-    $item1 = new eWAY\LineItem();
-    $item1->SKU = "SKU1";
-    $item1->Description = "Description1";
-    $item2 = new eWAY\LineItem();
-    $item2->SKU = "SKU2";
-    $item2->Description = "Description2";
-    $request->Items->LineItem[0] = $item1;
-    $request->Items->LineItem[1] = $item2;
+    if ($_POST['ddlMethod'] == 'ProcessPayment' || $_POST['ddlMethod'] == 'TokenPayment') {
+        // Populate values for LineItems
+        $item1 = new eWAY\LineItem();
+        $item1->SKU = "SKU1";
+        $item1->Description = "Description1";
+        $item2 = new eWAY\LineItem();
+        $item2->SKU = "SKU2";
+        $item2->Description = "Description2";
+        $request->Items->LineItem[0] = $item1;
+        $request->Items->LineItem[1] = $item2;
+
+        // Populate values for Payment Object
+        $request->Payment->TotalAmount = $_POST['txtAmount'];
+        $request->Payment->InvoiceNumber = $_POST['txtInvoiceNumber'];
+        $request->Payment->InvoiceDescription = $_POST['txtInvoiceDescription'];
+        $request->Payment->InvoiceReference = $_POST['txtInvoiceReference'];
+        $request->Payment->CurrencyCode = $_POST['txtCurrencyCode'];
+    }
 
     // Populate values for Options (not needed since it's in one script)
     // $opt1 = new eWAY\Option();
@@ -75,18 +86,11 @@ if ( isset($_POST['btnSubmit']) ) {
     // $opt2->Value = $_POST['txtOption2'];
     // $opt3 = new eWAY\Option();
     // $opt3->Value = $_POST['txtOption3'];
+    // $request->Options->Option[0]= $opt1;
+    // $request->Options->Option[1]= $opt2;
+    // $request->Options->Option[2]= $opt3;
 
-    $request->Options->Option[0]= $opt1;
-    $request->Options->Option[1]= $opt2;
-    $request->Options->Option[2]= $opt3;
-
-    // Populate values for Payment Object
-    $request->Payment->TotalAmount = $_POST['txtAmount'];
-    $request->Payment->InvoiceNumber = $_POST['txtInvoiceNumber'];
-    $request->Payment->InvoiceDescription = $_POST['txtInvoiceDescription'];
-    $request->Payment->InvoiceReference = $_POST['txtInvoiceReference'];
-    $request->Payment->CurrencyCode = $_POST['txtCurrencyCode'];
-
+    $request->Method = $_POST['ddlMethod'];
     $request->TransactionType = $_POST['ddlTransactionType'];
 
     // Call RapidAPI
@@ -189,8 +193,8 @@ if ( isset($_POST['btnSubmit']) ) {
                     TokenCustomerID
                 </label>
                 <label id="lblTokenCustomerID"><?php
-                    if (isset($result->TokenCustomerID)) {
-                            echo $result->TokenCustomerID;
+                    if (isset($result->Customer->TokenCustomerID)) {
+                            echo $result->Customer->TokenCustomerID;
                     }
                 ?></label>
             </div>
@@ -276,6 +280,26 @@ if ( isset($_POST['btnSubmit']) ) {
                 <option value="">No</option>
                 </select>
             </div>
+            <div class="fields">
+                <label for="ddlMethod">Payment Method</label>
+                <select id="ddlMethod" name="ddlMethod" style="width: 140px" onchange="onMethodChange(this.options[this.options.selectedIndex].value)">
+                    <option value="ProcessPayment">ProcessPayment</option>
+                    <option value="TokenPayment">TokenPayment</option>
+                    <option value="CreateTokenCustomer">CreateTokenCustomer</option>
+                    <option value="UpdateTokenCustomer">UpdateTokenCustomer</option>
+                </select>
+            </div>
+            <script>
+                function onMethodChange(v) {
+                    if (v == 'ProcessPayment' || v == 'TokenPayment') {
+                        jQuery('#payment_details').show();
+                    } else {
+                        jQuery('#payment_details').hide();
+                    }
+                }
+            </script>
+
+          <div id='payment_details'>
             <div class="header">
                 Payment Details
             </div>
@@ -314,6 +338,7 @@ if ( isset($_POST['btnSubmit']) ) {
                 <label for="txtOption3">Option 3</label>
                 <input id="txtOption3" name="txtOption3" type="text" value="Option3" />
             </div> -->
+          </div> <!-- end for <div id='payment_details'> -->
         </div>
         <div class="transactioncard">
             <div class="header first">
