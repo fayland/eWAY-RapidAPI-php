@@ -23,20 +23,24 @@ class RapidAPI {
     }
 
     public function CreateAccessCode($request) {
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Options->Option as $Option) {
-            $tempClass->Options[$i] = $Option;
-            $i++;
+        if ( isset($request->Options) && count($request->Options->Option) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Options->Option as $Option) {
+                $tempClass->Options[$i] = $Option;
+                $i++;
+            }
+            $request->Options = $tempClass->Options;
         }
-        $request->Options = $tempClass->Options;
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Items->LineItem as $LineItem) {
-            $tempClass->Items[$i] = $LineItem;
-            $i++;
+        if ( isset($request->Items) && count($request->Items->LineItem) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Items->LineItem as $LineItem) {
+                $tempClass->Items[$i] = $LineItem;
+                $i++;
+            }
+            $request->Items = $tempClass->Items;
         }
-        $request->Items = $tempClass->Items;
 
         $request = json_encode($request);
         $response = $this->PostToRapidAPI("AccessCodes", $request);
@@ -50,20 +54,24 @@ class RapidAPI {
     }
 
     public function CreateAccessCodesShared($request) {
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Options->Option as $Option) {
-            $tempClass->Options[$i] = $Option;
-            $i++;
+        if ( isset($request->Options) && count($request->Options->Option) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Options->Option as $Option) {
+                $tempClass->Options[$i] = $Option;
+                $i++;
+            }
+            $request->Options = $tempClass->Options;
         }
-        $request->Options = $tempClass->Options;
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Items->LineItem as $LineItem) {
-            $tempClass->Items[$i] = $LineItem;
-            $i++;
+        if ( isset($request->Items) && count($request->Items->LineItem) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Items->LineItem as $LineItem) {
+                $tempClass->Items[$i] = $LineItem;
+                $i++;
+            }
+            $request->Items = $tempClass->Items;
         }
-        $request->Items = $tempClass->Items;
 
         $request = json_encode($request);
         $response = $this->PostToRapidAPI("AccessCodesShared", $request);
@@ -71,20 +79,24 @@ class RapidAPI {
     }
 
     public function DirectPayment($request) {
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Options->Option as $Option) {
-            $tempClass->Options[$i] = $Option;
-            $i++;
+        if ( isset($request->Options) && count($request->Options->Option) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Options->Option as $Option) {
+                $tempClass->Options[$i] = $Option;
+                $i++;
+            }
+            $request->Options = $tempClass->Options;
         }
-        $request->Options = $tempClass->Options;
-        $i = 0;
-        $tempClass = new \stdClass();
-        foreach ($request->Items->LineItem as $LineItem) {
-            $tempClass->Items[$i] = $LineItem;
-            $i++;
+        if ( isset($request->Items) && count($request->Items->LineItem) ) {
+            $i = 0;
+            $tempClass = new \stdClass();
+            foreach ($request->Items->LineItem as $LineItem) {
+                $tempClass->Items[$i] = $LineItem;
+                $i++;
+            }
+            $request->Items = $tempClass->Items;
         }
-        $request->Items = $tempClass->Items;
 
         $request = json_encode($request);
         $response = $this->PostToRapidAPI("Transaction", $request);

@@ -124,8 +124,8 @@ if ( isset($_POST['btnSubmit']) ) {
     }
 }
 
-$AccessCode = $_GET['AccessCode'];
-if ($AccessCode) {
+if ( isset($_GET['AccessCode']) ) {
+    $AccessCode = $_GET['AccessCode'];
     // should be somewhere from config instead of SESSION
     if ($_SESSION['eWAY_username'] && $_SESSION['eWAY_password']) {
         // Call RapidAPI
