@@ -396,6 +396,10 @@ class Items {
 class LineItem {
     public $SKU;
     public $Description;
+    public $Quantity;
+    public $UnitCost;
+    public $Tax;
+    public $Total;
 }
 
 class Options {

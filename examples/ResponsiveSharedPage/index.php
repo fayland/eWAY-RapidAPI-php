@@ -10,7 +10,7 @@ if ( isset($_POST['btnSubmit']) ) {
 
     // we skip all validation but you should do it in real world
 
-    // Create DirectPayment Request Object
+    // Create Responsive Shared Page Request Object
     $request = new eWAY\CreateAccessCodesSharedRequest();
 
     // Populate values for Customer Object
