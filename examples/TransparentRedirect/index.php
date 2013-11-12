@@ -310,8 +310,60 @@ if ( isset($_GET['AccessCode']) ) {
         <h2>Sample Merchant Page</h2>
     </div>
     <div id="maincontent">
-        <form method="POST" action="<?php echo $result->FormActionURL ?>">
+        <form method="POST" action="<?php echo $result->FormActionURL ?>" id="form1">
             <input type='hidden' name='EWAY_ACCESSCODE' value="<?php echo $result->AccessCode ?>" />
+
+    <style>
+    .options li { display: inline-block; padding:10px 0; clear: both; }
+    .options img { margin-left:10px; top:10px; }
+    </style>
+    <div id="paymentoption">
+        <div class="transactioncustomer">
+            <div class="header">Select Payment Option</div>
+            <ul class="options">
+                <li>
+                    <label for="payment_option_creditcard">
+                        <input checked="checked" id="payment_option_creditcard" value="creditcard" name="EWAY_PAYMENTTYPE" type="radio">
+                        <img alt="creditcards" src="../assets/Images/creditcard_master.png">
+                        <img alt="creditcards" src="../assets/Images/creditcard_visa.png">
+                    </label>
+                </li>
+                <li>
+                    <label for="payment_option_paypal">
+                    <input id="payment_option_paypal" value="paypal" name="EWAY_PAYMENTTYPE" type="radio">
+                    <img src="../assets/Images/paypal.png"></label>
+                </li>
+                <li>
+                    <label for="payment_option_masterpass">
+                    <input id="payment_option_masterpass" value="masterpass" name="EWAY_PAYMENTTYPE" type="radio">
+                    <img src="../assets/Images/masterpass.png"></label>
+                </li>
+                <li>
+                    <label for="payment_option_vme">
+                    <input id="payment_option_vme" value="vme" name="EWAY_PAYMENTTYPE" type="radio">
+                    <img src="../assets/Images/vme.png"></label>
+                </li>
+            </ul>
+        </div>
+        <div class="button">
+            <br />
+            <br />
+            <input type="button" value="Continue" onclick="ChoosePaymentOption();" />
+        </div>
+    </div>
+
+        <script>
+        function ChoosePaymentOption() {
+            if (jQuery("input[name='EWAY_PAYMENTTYPE']:checked").val() != 'creditcard') {
+                jQuery('#form1').submit();
+            } else {
+                jQuery('#paymentoption').hide();
+                jQuery('#payment').show();
+            }
+        }
+        </script>
+
+    <div id="payment" style="display:none">
         <div class="transactioncustomer">
             <div class="header">
                 Customer Card Details
@@ -400,6 +452,8 @@ if ( isset($_GET['AccessCode']) ) {
             <br />
             <input type="submit" id="btnSubmit" name="btnSubmit" value="Submit" />
         </div>
+    </div>
+
         </form>
     </div>
     <div id="maincontentbottom">
