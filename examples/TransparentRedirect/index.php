@@ -323,7 +323,7 @@ if ( isset($_GET['AccessCode']) ) {
             <ul class="options">
                 <li>
                     <label for="payment_option_creditcard">
-                        <input checked="checked" id="payment_option_creditcard" value="creditcard" name="EWAY_PAYMENTTYPE" type="radio">
+                        <input id="payment_option_creditcard" value="creditcard" name="EWAY_PAYMENTTYPE" type="radio">
                         <img alt="creditcards" src="../assets/Images/creditcard_master.png">
                         <img alt="creditcards" src="../assets/Images/creditcard_visa.png">
                     </label>
