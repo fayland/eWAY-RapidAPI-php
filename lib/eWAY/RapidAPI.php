@@ -39,6 +39,11 @@ class RapidAPI {
             $i = 0;
             $tempClass = new \stdClass();
             foreach ($request->Items->LineItem as $LineItem) {
+                // must be strings
+                $LineItem->Quantity = strval($LineItem->Quantity);
+                $LineItem->UnitCost = strval($LineItem->UnitCost);
+                $LineItem->Tax = strval($LineItem->Tax);
+                $LineItem->Total = strval($LineItem->Total);
                 $tempClass->Items[$i] = $LineItem;
                 $i++;
             }
@@ -70,6 +75,11 @@ class RapidAPI {
             $i = 0;
             $tempClass = new \stdClass();
             foreach ($request->Items->LineItem as $LineItem) {
+                // must be strings
+                $LineItem->Quantity = strval($LineItem->Quantity);
+                $LineItem->UnitCost = strval($LineItem->UnitCost);
+                $LineItem->Tax = strval($LineItem->Tax);
+                $LineItem->Total = strval($LineItem->Total);
                 $tempClass->Items[$i] = $LineItem;
                 $i++;
             }
