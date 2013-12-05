@@ -1,5 +1,5 @@
 {
-    "name": "fayland/eWAY-RapidAPI-php",
+    "name": "fayland/eway-rapidapi-php",
     "description": "eWAY RapidAPI SDK for PHP",
     "keywords" : [ "eWAY", "RapidAPI" ],
     "homepage": "https://github.com/fayland/eWAY-RapidAPI-php",
