@@ -26,30 +26,7 @@ class RapidAPI {
     }
 
     public function CreateAccessCode($request) {
-        if ( isset($request->Options) && count($request->Options->Option) ) {
-            $i = 0;
-            $tempClass = new \stdClass();
-            foreach ($request->Options->Option as $Option) {
-                $tempClass->Options[$i] = $Option;
-                $i++;
-            }
-            $request->Options = $tempClass->Options;
-        }
-        if ( isset($request->Items) && count($request->Items->LineItem) ) {
-            $i = 0;
-            $tempClass = new \stdClass();
-            foreach ($request->Items->LineItem as $LineItem) {
-                // must be strings
-                $LineItem->Quantity = strval($LineItem->Quantity);
-                $LineItem->UnitCost = strval($LineItem->UnitCost);
-                $LineItem->Tax = strval($LineItem->Tax);
-                $LineItem->Total = strval($LineItem->Total);
-                $tempClass->Items[$i] = $LineItem;
-                $i++;
-            }
-            $request->Items = $tempClass->Items;
-        }
-
+        $request = $this->__fixObjtoJSON($request);
         $request = json_encode($request);
         $response = $this->PostToRapidAPI("AccessCodes", $request);
         return json_decode($response);
@@ -62,6 +39,30 @@ class RapidAPI {
     }
 
     public function CreateAccessCodesShared($request) {
+        $request = $this->__fixObjtoJSON($request);
+        $response = $this->PostToRapidAPI("AccessCodesShared", $request);
+        return json_decode($response);
+    }
+
+    public function DirectPayment($request) {
+        $request = $this->__fixObjtoJSON($request);
+        $response = $this->PostToRapidAPI("Transaction", $request);
+        return json_decode($response);
+    }
+
+    public function Refund($request) {
+        $TransactionID = $request->Refund->TransactionID;
+        $request = $this->__fixObjtoJSON($request);
+        $response = $this->PostToRapidAPI("Transaction/$TransactionID/Refund", $request);
+        return json_decode($response);
+    }
+
+    /* alias */
+    public function getMessage($code) {
+        return ResponseCode::getMessage($code);
+    }
+
+    private function __fixObjtoJSON($request) {
         if ( isset($request->Options) && count($request->Options->Option) ) {
             $i = 0;
             $tempClass = new \stdClass();
@@ -76,49 +77,16 @@ class RapidAPI {
             $tempClass = new \stdClass();
             foreach ($request->Items->LineItem as $LineItem) {
                 // must be strings
-                $LineItem->Quantity = strval($LineItem->Quantity);
-                $LineItem->UnitCost = strval($LineItem->UnitCost);
-                $LineItem->Tax = strval($LineItem->Tax);
-                $LineItem->Total = strval($LineItem->Total);
+                if (isset($LineItem->Quantity)) $LineItem->Quantity = strval($LineItem->Quantity);
+                if (isset($LineItem->UnitCost)) $LineItem->UnitCost = strval($LineItem->UnitCost);
+                if (isset($LineItem->Tax)) $LineItem->Tax = strval($LineItem->Tax);
+                if (isset($LineItem->Total)) $LineItem->Total = strval($LineItem->Total);
                 $tempClass->Items[$i] = $LineItem;
                 $i++;
             }
             $request->Items = $tempClass->Items;
         }
-
-        $request = json_encode($request);
-        $response = $this->PostToRapidAPI("AccessCodesShared", $request);
-        return json_decode($response);
-    }
-
-    public function DirectPayment($request) {
-        if ( isset($request->Options) && count($request->Options->Option) ) {
-            $i = 0;
-            $tempClass = new \stdClass();
-            foreach ($request->Options->Option as $Option) {
-                $tempClass->Options[$i] = $Option;
-                $i++;
-            }
-            $request->Options = $tempClass->Options;
-        }
-        if ( isset($request->Items) && count($request->Items->LineItem) ) {
-            $i = 0;
-            $tempClass = new \stdClass();
-            foreach ($request->Items->LineItem as $LineItem) {
-                $tempClass->Items[$i] = $LineItem;
-                $i++;
-            }
-            $request->Items = $tempClass->Items;
-        }
-
-        $request = json_encode($request);
-        $response = $this->PostToRapidAPI("Transaction", $request);
-        return json_decode($response);
-    }
-
-    /* alias */
-    public function getMessage($code) {
-        return ResponseCode::getMessage($code);
+        return json_encode($request);
     }
 
     /*
@@ -136,9 +104,9 @@ class RapidAPI {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        //curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
+        // curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)");
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         // curl_setopt($ch, CURLOPT_VERBOSE, true);
         $response = curl_exec($ch);
 
@@ -359,6 +327,26 @@ class CreateDirectPaymentRequest {
     }
 }
 
+class CreateRefundRequest {
+    public $Refund;
+    public $Customer;
+
+    public $ShippingAddress;
+    public $Items;
+    public $Options;
+
+    private $CustomerIP;
+    private $DeviceID;
+    public $PartnerID;
+
+    function __construct() {
+        $this->Refund = new Payment();
+        $this->Customer = new CardCustomer();
+        $this->ShippingAddress = new ShippingAddress();
+        $this->CustomerIP = $_SERVER["SERVER_NAME"];
+    }
+}
+
 /**
  * Description of Customer
  */
@@ -435,6 +423,9 @@ class Payment {
     public $InvoiceReference;
     /// <summary>The merchant's currency</summary>
     public $CurrencyCode;
+
+    /// For Refund
+    public $TransactionID;
 }
 
 class GetAccessCodeResultRequest {

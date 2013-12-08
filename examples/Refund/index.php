@@ -10,8 +10,16 @@ if ( isset($_POST['btnSubmit']) ) {
 
     // we skip all validation but you should do it in real world
 
-    // Create DirectPayment Request Object
-    $request = new eWAY\CreateDirectPaymentRequest();
+    // Create Refund Request Object
+    $request = new eWAY\CreateRefundRequest();
+
+    // ALL are optional expect Refund TotalAmount and TransactionID
+    $request->Refund->TotalAmount = intval($_POST['txtAmount']);
+    $request->Refund->InvoiceNumber = $_POST['txtInvoiceNumber'];
+    $request->Refund->InvoiceDescription = $_POST['txtInvoiceDescription'];
+    $request->Refund->InvoiceReference = $_POST['txtInvoiceReference'];
+    $request->Refund->CurrencyCode = $_POST['txtCurrencyCode'];
+    $request->Refund->TransactionID = $_POST['txtTransactionID'];
 
     // Populate values for Customer Object
     // Note: TokenCustomerID is Required Field When Update an exsiting TokenCustomer
@@ -60,44 +68,32 @@ if ( isset($_POST['btnSubmit']) ) {
     // ShippingMethod, e.g. "LowCost", "International", "Military". Check the spec for available values.
     $request->ShippingAddress->ShippingMethod = "LowCost";
 
-    if ($_POST['ddlMethod'] == 'ProcessPayment' || $_POST['ddlMethod'] == 'TokenPayment') {
-        // Populate values for LineItems
-        $item1 = new eWAY\LineItem();
-        $item1->SKU = "SKU1";
-        $item1->Description = "Description1";
-        $item2 = new eWAY\LineItem();
-        $item2->SKU = "SKU2";
-        $item2->Description = "Description2";
-        $request->Items->LineItem[0] = $item1;
-        $request->Items->LineItem[1] = $item2;
+    // Populate values for LineItems
+    $item1 = new eWAY\LineItem();
+    $item1->SKU = "SKU1";
+    $item1->Description = "Description1";
+    $item2 = new eWAY\LineItem();
+    $item2->SKU = "SKU2";
+    $item2->Description = "Description2";
+    $request->Items->LineItem[0] = $item1;
+    $request->Items->LineItem[1] = $item2;
 
-        // Populate values for Payment Object
-        $request->Payment->TotalAmount = $_POST['txtAmount'];
-        $request->Payment->InvoiceNumber = $_POST['txtInvoiceNumber'];
-        $request->Payment->InvoiceDescription = $_POST['txtInvoiceDescription'];
-        $request->Payment->InvoiceReference = $_POST['txtInvoiceReference'];
-        $request->Payment->CurrencyCode = $_POST['txtCurrencyCode'];
-    }
-
-    // Populate values for Options (not needed since it's in one script)
-    // $opt1 = new eWAY\Option();
-    // $opt1->Value = $_POST['txtOption1'];
-    // $opt2 = new eWAY\Option();
-    // $opt2->Value = $_POST['txtOption2'];
-    // $opt3 = new eWAY\Option();
-    // $opt3->Value = $_POST['txtOption3'];
-    // $request->Options->Option[0]= $opt1;
-    // $request->Options->Option[1]= $opt2;
-    // $request->Options->Option[2]= $opt3;
-
-    $request->Method = $_POST['ddlMethod'];
-    $request->TransactionType = $_POST['ddlTransactionType'];
+    // Populate values for Options
+    $opt1 = new eWAY\Option();
+    $opt1->Value = $_POST['txtOption1'];
+    $opt2 = new eWAY\Option();
+    $opt2->Value = $_POST['txtOption2'];
+    $opt3 = new eWAY\Option();
+    $opt3->Value = $_POST['txtOption3'];
+    $request->Options->Option[0]= $opt1;
+    $request->Options->Option[1]= $opt2;
+    $request->Options->Option[2]= $opt3;
 
     // Call RapidAPI
     $eway_params = array();
     if ($_POST['ddlSandbox']) $eway_params['sandbox'] = true;
     $service = new eWAY\RapidAPI($_POST['txtUsername'], $_POST['txtPassword'], $eway_params);
-    $result = $service->DirectPayment($request);
+    $result = $service->Refund($request);
 
     // Check if any error returns
     if(isset($result->Errors)) {
@@ -153,12 +149,12 @@ if ( isset($_POST['btnSubmit']) ) {
             <div class="fields">
                 <label for="lblInvoiceNumber">
                     Invoice Number</label>
-                <label id="lblInvoiceNumber"><?php echo $result->Payment->InvoiceNumber; ?></label>
+                <label id="lblInvoiceNumber"><?php echo $result->Refund->InvoiceNumber; ?></label>
             </div>
             <div class="fields">
                 <label for="lblInvoiceReference">
                     Invoice Reference</label>
-                <label id="lblInvoiceReference"><?php echo $result->Payment->InvoiceReference; ?></label>
+                <label id="lblInvoiceReference"><?php echo $result->Refund->InvoiceReference; ?></label>
             </div>
             <div class="fields">
                 <label for="lblResponseCode">
@@ -189,21 +185,11 @@ if ( isset($_POST['btnSubmit']) ) {
                 </label>
             </div>
             <div class="fields">
-                <label for="lblTokenCustomerID">
-                    TokenCustomerID
-                </label>
-                <label id="lblTokenCustomerID"><?php
-                    if (isset($result->Customer->TokenCustomerID)) {
-                            echo $result->Customer->TokenCustomerID;
-                    }
-                ?></label>
-            </div>
-            <div class="fields">
                 <label for="lblTotalAmount">
                     Total Amount</label>
                 <label id="lblTotalAmount"><?php
-                    if (isset($result->Payment->TotalAmount)) {
-                        echo $result->Payment->TotalAmount;
+                    if (isset($result->Refund->TotalAmount)) {
+                        echo $result->Refund->TotalAmount;
                     }
                 ?></label>
             </div>
@@ -224,15 +210,6 @@ if ( isset($_POST['btnSubmit']) ) {
                         echo 'True';
                     } else {
                         echo 'False';
-                    }
-                ?></label>
-            </div>
-            <div class="fields">
-                <label for="lblBeagleScore">
-                    Beagle Score</label>
-                <label id="lblBeagleScore"><?php
-                    if (isset($result->BeagleScore)) {
-                        echo $result->BeagleScore;
                     }
                 ?></label>
             </div>
@@ -261,6 +238,7 @@ if ( isset($_POST['btnSubmit']) ) {
     </div>
 <?php } ?>
     <div id="maincontent">
+        <p style='font-weight: strong; color: red'>Only Amount and Transaction ID are required.</p>
         <div class="transactioncustomer">
             <div class="header first">
                 Request Options
@@ -280,32 +258,18 @@ if ( isset($_POST['btnSubmit']) ) {
                 <option value="">No</option>
                 </select>
             </div>
-            <div class="fields">
-                <label for="ddlMethod">Payment Method</label>
-                <select id="ddlMethod" name="ddlMethod" style="width: 140px" onchange="onMethodChange(this.options[this.options.selectedIndex].value)">
-                    <option value="ProcessPayment">ProcessPayment</option>
-                    <option value="TokenPayment">TokenPayment</option>
-                    <option value="CreateTokenCustomer">CreateTokenCustomer</option>
-                    <option value="UpdateTokenCustomer">UpdateTokenCustomer</option>
-                </select>
-            </div>
-            <script>
-                function onMethodChange(v) {
-                    if (v == 'ProcessPayment' || v == 'TokenPayment') {
-                        jQuery('#payment_details').show();
-                    } else {
-                        jQuery('#payment_details').hide();
-                    }
-                }
-            </script>
 
-          <div id='payment_details'>
+          <div id='refund_details'>
             <div class="header">
-                Payment Details
+                Refund Details
             </div>
             <div class="fields">
                 <label for="txtAmount">Amount &nbsp;<img src="../assets/Images/question.gif" alt="Find out more" id="amountTipOpener" border="0" /></label>
                 <input id="txtAmount" name="txtAmount" type="text" value="100" />
+            </div>
+            <div class="fields">
+                <label for="txtAmount">Transaction ID</label>
+                <input id="txtAmount" name="txtTransactionID" type="text" value="" placeholder="The original Transaction ID to refund" />
             </div>
             <div class="fields">
                 <label for="txtCurrencyCode">Currency Code </label>
@@ -323,7 +287,7 @@ if ( isset($_POST['btnSubmit']) ) {
                 <label for="txtInvoiceDescription">Invoice Description</label>
                 <input id="txtInvoiceDescription" name="txtInvoiceDescription" type="text" value="Individual Invoice Description" />
             </div>
-            <!-- <div class="header">
+            <div class="header">
                 Custom Fields
             </div>
             <div class="fields">
@@ -337,8 +301,8 @@ if ( isset($_POST['btnSubmit']) ) {
             <div class="fields">
                 <label for="txtOption3">Option 3</label>
                 <input id="txtOption3" name="txtOption3" type="text" value="Option3" />
-            </div> -->
-          </div> <!-- end for <div id='payment_details'> -->
+            </div>
+          </div> <!-- end for <div id='refund_details'> -->
         </div>
         <div class="transactioncard">
             <div class="header first">
@@ -505,22 +469,11 @@ if ( isset($_POST['btnSubmit']) ) {
                     CVN</label>
                 <input type='text' name='txtCVN' id='txtCVN' value="123" maxlength="4" style="width:40px;"/> <!-- This field is optional but highly recommended -->
             </div>
-            <div class="header">
-                Others
-            </div>
-            <div class="fields">
-                <label for="ddlTransactionType">Transaction Type</label>
-                <select id="ddlTransactionType" name="ddlTransactionType" style="width:140px;">
-                <option value="Purchase">Ecommerce</option>
-                <option value="MOTO">MOTO</option>
-                <option value="Recurring">Recurring</option>
-                </select>
-            </div>
         </div>
         <div class="button">
             <br />
             <br />
-            <input type="submit" id="btnSubmit" name="btnSubmit" value="Pay with eWAY" />
+            <input type="submit" id="btnSubmit" name="btnSubmit" value="Refund" />
         </div>
     </div>
     <div id="maincontentbottom">
