@@ -127,7 +127,7 @@ if ( isset($_POST['btnSubmit']) ) {
 if ( isset($_GET['AccessCode']) ) {
     $AccessCode = $_GET['AccessCode'];
     // should be somewhere from config instead of SESSION
-    if ($_SESSION['eWAY_username'] && $_SESSION['eWAY_password']) {
+    if ( isset($_SESSION['eWAY_username']) && isset($_SESSION['eWAY_password']) ) {
         // Call RapidAPI
         $eway_params = array();
         if ($_SESSION['eWAY_sandbox']) $eway_params['sandbox'] = true;
@@ -328,7 +328,7 @@ if ( isset($_GET['AccessCode']) ) {
             </div>
             <div class="fields">
                 <label for="txtUsername">API Username</label>
-                <input id="txtUsername" name="txtUsername" type="text" value="<?php echo $_SESSION['eWAY_username'] ?>" />
+                <input id="txtUsername" name="txtUsername" type="text" value="<?php if (isset($_SESSION['eWAY_username'])) { echo $_SESSION['eWAY_username']; } ?>" />
             </div>
             <div class="fields">
                 <label for="txtPassword">API Password</label>
