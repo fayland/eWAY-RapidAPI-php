@@ -44,14 +44,8 @@ if ( isset($_POST['btnSubmit']) ) {
     $request->Customer->Fax = $_POST['txtFax'];
     $request->Customer->Url = $_POST['txtUrl'];
 
-    $request->Customer->CardDetails->Name = $_POST['txtCardName'];
-    $request->Customer->CardDetails->Number = $_POST['txtCardNumber'];
     $request->Customer->CardDetails->ExpiryMonth = $_POST['ddlCardExpiryMonth'];
     $request->Customer->CardDetails->ExpiryYear = $_POST['ddlCardExpiryYear'];
-    $request->Customer->CardDetails->StartMonth = $_POST['ddlStartMonth'];
-    $request->Customer->CardDetails->StartYear = $_POST['ddlStartYear'];
-    $request->Customer->CardDetails->IssueNumber = $_POST['txtIssueNumber'];
-    $request->Customer->CardDetails->CVN = $_POST['txtCVN'];
 
     // Populate values for ShippingAddress Object.
     // This values can be taken from a Form POST as well. Now is just some dummy data.
@@ -392,16 +386,6 @@ if ( isset($_POST['btnSubmit']) ) {
                 Customer Card Details
             </div>
             <div class="fields">
-                <label for="txtCardName">
-                    Card Holder</label>
-                <input type='text' name='txtCardName' id='txtCardName' value="TestUser" />
-            </div>
-            <div class="fields">
-                <label for="txtCardNumber">
-                    Card Number</label>
-                <input type='text' name='txtCardNumber' id='txtCardNumber' value="4444333322221111" />
-            </div>
-            <div class="fields">
                 <label for="ddlCardExpiryMonth">
                     Expiry Date</label>
                 <select ID="ddlCardExpiryMonth" name="ddlCardExpiryMonth">
@@ -427,47 +411,6 @@ if ( isset($_POST['btnSubmit']) ) {
                         }
                     ?>
                 </select>
-            </div>
-            <div class="fields">
-                <label for="ddlStartMonth">
-                    Valid From Date</label>
-                <select ID="ddlStartMonth" name="ddlStartMonth">
-                    <?php
-                        $expiry_month = "";//date('m');
-                        echo  "<option></option>";
-
-                        for($i = 1; $i <= 12; $i++) {
-                            $s = sprintf('%02d', $i);
-                            echo "<option value='$s'";
-                            if ( $expiry_month == $i ) {
-                                echo " selected='selected'";
-                            }
-                            echo ">$s</option>\n";
-                        }
-                    ?>
-                </select>
-                /
-                <select ID="ddlStartYear" name="ddlStartYear">
-                    <?php
-                        $i = date("y");
-                        $j = $i-11;
-                        echo  "<option></option>";
-                        for ($i; $i >= $j; $i--) {
-                            $year = sprintf('%02d', $i);
-                            echo "<option value='$year'>$year</option>\n";
-                        }
-                    ?>
-                </select>
-            </div>
-            <div class="fields">
-                <label for="txtIssueNumber">
-                    Issue Number</label>
-                <input type='text' name='txtIssueNumber' id='txtIssueNumber' value="22" maxlength="2" style="width:40px;"/> <!-- This field is optional but highly recommended -->
-            </div>
-            <div class="fields">
-                <label for="txtCVN">
-                    CVN</label>
-                <input type='text' name='txtCVN' id='txtCVN' value="123" maxlength="4" style="width:40px;"/> <!-- This field is optional but highly recommended -->
             </div>
         </div>
         <div class="button">
