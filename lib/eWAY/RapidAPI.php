@@ -110,8 +110,6 @@ class RapidAPI {
         // curl_setopt($ch, CURLOPT_VERBOSE, true);
         $response = curl_exec($ch);
 
-        error_log(print_r($response, true));
-
         if (curl_errno($ch) != CURLE_OK) {
             echo "<h2>POST Error: " . curl_error($ch) . " URL: $url</h2><pre>";
             die();
