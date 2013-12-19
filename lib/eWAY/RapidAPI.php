@@ -27,7 +27,6 @@ class RapidAPI {
 
     public function CreateAccessCode($request) {
         $request = $this->__fixObjtoJSON($request);
-        $request = json_encode($request);
         $response = $this->PostToRapidAPI("AccessCodes", $request);
         return json_decode($response);
     }
