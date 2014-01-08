@@ -85,6 +85,11 @@ class RapidAPI {
             }
             $request->Items = $tempClass->Items;
         }
+
+        // fix blank issue
+        if (isset($request->RedirectUrl)) $request->RedirectUrl = str_replace(' ', '%20', $request->RedirectUrl);
+        if (isset($request->CancelUrl)) $request->CancelUrl = str_replace(' ', '%20', $request->CancelUrl);
+
         return json_encode($request);
     }
 
